@@ -1,7 +1,8 @@
 const { GraphQLServer } = require('graphql-yoga');
 const { prisma } = require('./generated/prisma-client');
 
-// a js object that mirrors the query, mutation, and subscription types and their fields from the app schema. Each field in the app schema is represented by a function with the same name in that object.
+// A js object that mirrors the query, mutation, and subscription types and their fields from the app schema.
+// Each field in the app schema is represented by a function with the same name in that object.
 const resolvers = {
     Query: {
         info: () => `this is the api of the Hackernews Clone`,
@@ -13,9 +14,11 @@ const resolvers = {
         post: (root, args, context) => {
             return context.prisma.createBurger({
                 name: args.name,
-                description: args.description
+                restaurant: args.restaurant,
+                description: args.description,
+                rating: args.rating
             })
-        }
+        },
     }
 };
 
