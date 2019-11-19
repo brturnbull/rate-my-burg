@@ -1,8 +1,10 @@
 type Burger {
     id: ID! @id
     createdAt: DateTime! @createdAt
-    description: String!
-    name: String,
+    description: String!,
+    restaurant: String!,
+    name: String!,
+    rating: Int!,
     postedBy: User
 }
 
