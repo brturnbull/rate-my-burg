@@ -147,8 +147,12 @@ export type BurgerOrderByInput =
   | "createdAt_DESC"
   | "description_ASC"
   | "description_DESC"
+  | "restaurant_ASC"
+  | "restaurant_DESC"
   | "name_ASC"
-  | "name_DESC";
+  | "name_DESC"
+  | "rating_ASC"
+  | "rating_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -203,6 +207,20 @@ export interface BurgerWhereInput {
   description_not_starts_with?: Maybe<String>;
   description_ends_with?: Maybe<String>;
   description_not_ends_with?: Maybe<String>;
+  restaurant?: Maybe<String>;
+  restaurant_not?: Maybe<String>;
+  restaurant_in?: Maybe<String[] | String>;
+  restaurant_not_in?: Maybe<String[] | String>;
+  restaurant_lt?: Maybe<String>;
+  restaurant_lte?: Maybe<String>;
+  restaurant_gt?: Maybe<String>;
+  restaurant_gte?: Maybe<String>;
+  restaurant_contains?: Maybe<String>;
+  restaurant_not_contains?: Maybe<String>;
+  restaurant_starts_with?: Maybe<String>;
+  restaurant_not_starts_with?: Maybe<String>;
+  restaurant_ends_with?: Maybe<String>;
+  restaurant_not_ends_with?: Maybe<String>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -217,6 +235,14 @@ export interface BurgerWhereInput {
   name_not_starts_with?: Maybe<String>;
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
+  rating?: Maybe<Int>;
+  rating_not?: Maybe<Int>;
+  rating_in?: Maybe<Int[] | Int>;
+  rating_not_in?: Maybe<Int[] | Int>;
+  rating_lt?: Maybe<Int>;
+  rating_lte?: Maybe<Int>;
+  rating_gt?: Maybe<Int>;
+  rating_gte?: Maybe<Int>;
   postedBy?: Maybe<UserWhereInput>;
   AND?: Maybe<BurgerWhereInput[] | BurgerWhereInput>;
   OR?: Maybe<BurgerWhereInput[] | BurgerWhereInput>;
@@ -296,7 +322,9 @@ export type UserWhereUniqueInput = AtLeastOne<{
 export interface BurgerCreateInput {
   id?: Maybe<ID_Input>;
   description: String;
-  name?: Maybe<String>;
+  restaurant: String;
+  name: String;
+  rating: Int;
   postedBy?: Maybe<UserCreateOneWithoutBurgersInput>;
 }
 
@@ -314,7 +342,9 @@ export interface UserCreateWithoutBurgersInput {
 
 export interface BurgerUpdateInput {
   description?: Maybe<String>;
+  restaurant?: Maybe<String>;
   name?: Maybe<String>;
+  rating?: Maybe<Int>;
   postedBy?: Maybe<UserUpdateOneWithoutBurgersInput>;
 }
 
@@ -340,7 +370,9 @@ export interface UserUpsertWithoutBurgersInput {
 
 export interface BurgerUpdateManyMutationInput {
   description?: Maybe<String>;
+  restaurant?: Maybe<String>;
   name?: Maybe<String>;
+  rating?: Maybe<Int>;
 }
 
 export interface UserCreateInput {
@@ -361,7 +393,9 @@ export interface BurgerCreateManyWithoutPostedByInput {
 export interface BurgerCreateWithoutPostedByInput {
   id?: Maybe<ID_Input>;
   description: String;
-  name?: Maybe<String>;
+  restaurant: String;
+  name: String;
+  rating: Int;
 }
 
 export interface UserUpdateInput {
@@ -401,7 +435,9 @@ export interface BurgerUpdateWithWhereUniqueWithoutPostedByInput {
 
 export interface BurgerUpdateWithoutPostedByDataInput {
   description?: Maybe<String>;
+  restaurant?: Maybe<String>;
   name?: Maybe<String>;
+  rating?: Maybe<Int>;
 }
 
 export interface BurgerUpsertWithWhereUniqueWithoutPostedByInput {
@@ -447,6 +483,20 @@ export interface BurgerScalarWhereInput {
   description_not_starts_with?: Maybe<String>;
   description_ends_with?: Maybe<String>;
   description_not_ends_with?: Maybe<String>;
+  restaurant?: Maybe<String>;
+  restaurant_not?: Maybe<String>;
+  restaurant_in?: Maybe<String[] | String>;
+  restaurant_not_in?: Maybe<String[] | String>;
+  restaurant_lt?: Maybe<String>;
+  restaurant_lte?: Maybe<String>;
+  restaurant_gt?: Maybe<String>;
+  restaurant_gte?: Maybe<String>;
+  restaurant_contains?: Maybe<String>;
+  restaurant_not_contains?: Maybe<String>;
+  restaurant_starts_with?: Maybe<String>;
+  restaurant_not_starts_with?: Maybe<String>;
+  restaurant_ends_with?: Maybe<String>;
+  restaurant_not_ends_with?: Maybe<String>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -461,6 +511,14 @@ export interface BurgerScalarWhereInput {
   name_not_starts_with?: Maybe<String>;
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
+  rating?: Maybe<Int>;
+  rating_not?: Maybe<Int>;
+  rating_in?: Maybe<Int[] | Int>;
+  rating_not_in?: Maybe<Int[] | Int>;
+  rating_lt?: Maybe<Int>;
+  rating_lte?: Maybe<Int>;
+  rating_gt?: Maybe<Int>;
+  rating_gte?: Maybe<Int>;
   AND?: Maybe<BurgerScalarWhereInput[] | BurgerScalarWhereInput>;
   OR?: Maybe<BurgerScalarWhereInput[] | BurgerScalarWhereInput>;
   NOT?: Maybe<BurgerScalarWhereInput[] | BurgerScalarWhereInput>;
@@ -473,7 +531,9 @@ export interface BurgerUpdateManyWithWhereNestedInput {
 
 export interface BurgerUpdateManyDataInput {
   description?: Maybe<String>;
+  restaurant?: Maybe<String>;
   name?: Maybe<String>;
+  rating?: Maybe<Int>;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -512,14 +572,18 @@ export interface Burger {
   id: ID_Output;
   createdAt: DateTimeOutput;
   description: String;
-  name?: String;
+  restaurant: String;
+  name: String;
+  rating: Int;
 }
 
 export interface BurgerPromise extends Promise<Burger>, Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   description: () => Promise<String>;
+  restaurant: () => Promise<String>;
   name: () => Promise<String>;
+  rating: () => Promise<Int>;
   postedBy: <T = UserPromise>() => T;
 }
 
@@ -529,7 +593,9 @@ export interface BurgerSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   description: () => Promise<AsyncIterator<String>>;
+  restaurant: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
+  rating: () => Promise<AsyncIterator<Int>>;
   postedBy: <T = UserSubscription>() => T;
 }
 
@@ -539,7 +605,9 @@ export interface BurgerNullablePromise
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   description: () => Promise<String>;
+  restaurant: () => Promise<String>;
   name: () => Promise<String>;
+  rating: () => Promise<Int>;
   postedBy: <T = UserPromise>() => T;
 }
 
@@ -778,7 +846,9 @@ export interface BurgerPreviousValues {
   id: ID_Output;
   createdAt: DateTimeOutput;
   description: String;
-  name?: String;
+  restaurant: String;
+  name: String;
+  rating: Int;
 }
 
 export interface BurgerPreviousValuesPromise
@@ -787,7 +857,9 @@ export interface BurgerPreviousValuesPromise
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   description: () => Promise<String>;
+  restaurant: () => Promise<String>;
   name: () => Promise<String>;
+  rating: () => Promise<Int>;
 }
 
 export interface BurgerPreviousValuesSubscription
@@ -796,7 +868,9 @@ export interface BurgerPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   description: () => Promise<AsyncIterator<String>>;
+  restaurant: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
+  rating: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface UserSubscriptionPayload {

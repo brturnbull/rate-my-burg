@@ -19,7 +19,9 @@ type Burger {
   id: ID!
   createdAt: DateTime!
   description: String!
-  name: String
+  restaurant: String!
+  name: String!
+  rating: Int!
   postedBy: User
 }
 
@@ -32,7 +34,9 @@ type BurgerConnection {
 input BurgerCreateInput {
   id: ID
   description: String!
-  name: String
+  restaurant: String!
+  name: String!
+  rating: Int!
   postedBy: UserCreateOneWithoutBurgersInput
 }
 
@@ -44,7 +48,9 @@ input BurgerCreateManyWithoutPostedByInput {
 input BurgerCreateWithoutPostedByInput {
   id: ID
   description: String!
-  name: String
+  restaurant: String!
+  name: String!
+  rating: Int!
 }
 
 type BurgerEdge {
@@ -59,15 +65,21 @@ enum BurgerOrderByInput {
   createdAt_DESC
   description_ASC
   description_DESC
+  restaurant_ASC
+  restaurant_DESC
   name_ASC
   name_DESC
+  rating_ASC
+  rating_DESC
 }
 
 type BurgerPreviousValues {
   id: ID!
   createdAt: DateTime!
   description: String!
-  name: String
+  restaurant: String!
+  name: String!
+  rating: Int!
 }
 
 input BurgerScalarWhereInput {
@@ -107,6 +119,20 @@ input BurgerScalarWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  restaurant: String
+  restaurant_not: String
+  restaurant_in: [String!]
+  restaurant_not_in: [String!]
+  restaurant_lt: String
+  restaurant_lte: String
+  restaurant_gt: String
+  restaurant_gte: String
+  restaurant_contains: String
+  restaurant_not_contains: String
+  restaurant_starts_with: String
+  restaurant_not_starts_with: String
+  restaurant_ends_with: String
+  restaurant_not_ends_with: String
   name: String
   name_not: String
   name_in: [String!]
@@ -121,6 +147,14 @@ input BurgerScalarWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  rating: Int
+  rating_not: Int
+  rating_in: [Int!]
+  rating_not_in: [Int!]
+  rating_lt: Int
+  rating_lte: Int
+  rating_gt: Int
+  rating_gte: Int
   AND: [BurgerScalarWhereInput!]
   OR: [BurgerScalarWhereInput!]
   NOT: [BurgerScalarWhereInput!]
@@ -146,18 +180,24 @@ input BurgerSubscriptionWhereInput {
 
 input BurgerUpdateInput {
   description: String
+  restaurant: String
   name: String
+  rating: Int
   postedBy: UserUpdateOneWithoutBurgersInput
 }
 
 input BurgerUpdateManyDataInput {
   description: String
+  restaurant: String
   name: String
+  rating: Int
 }
 
 input BurgerUpdateManyMutationInput {
   description: String
+  restaurant: String
   name: String
+  rating: Int
 }
 
 input BurgerUpdateManyWithoutPostedByInput {
@@ -179,7 +219,9 @@ input BurgerUpdateManyWithWhereNestedInput {
 
 input BurgerUpdateWithoutPostedByDataInput {
   description: String
+  restaurant: String
   name: String
+  rating: Int
 }
 
 input BurgerUpdateWithWhereUniqueWithoutPostedByInput {
@@ -230,6 +272,20 @@ input BurgerWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  restaurant: String
+  restaurant_not: String
+  restaurant_in: [String!]
+  restaurant_not_in: [String!]
+  restaurant_lt: String
+  restaurant_lte: String
+  restaurant_gt: String
+  restaurant_gte: String
+  restaurant_contains: String
+  restaurant_not_contains: String
+  restaurant_starts_with: String
+  restaurant_not_starts_with: String
+  restaurant_ends_with: String
+  restaurant_not_ends_with: String
   name: String
   name_not: String
   name_in: [String!]
@@ -244,6 +300,14 @@ input BurgerWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  rating: Int
+  rating_not: Int
+  rating_in: [Int!]
+  rating_not_in: [Int!]
+  rating_lt: Int
+  rating_lte: Int
+  rating_gt: Int
+  rating_gte: Int
   postedBy: UserWhereInput
   AND: [BurgerWhereInput!]
   OR: [BurgerWhereInput!]
