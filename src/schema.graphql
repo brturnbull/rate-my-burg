@@ -1,16 +1,31 @@
 type Query {
     info: String!
     feed: [Burger!]!
-    numberOfLinks: String!
 }
 
 type Mutation {
-    post(url: String!, description: String!): Burger
+    post(name: String!, description: String!, restaurant: String!, rating: Int!): Burger
+    signup(email: String!, passowrd: String!, name: String!): AuthPayload
+    login(email: String!, password: String!): AuthPayload
 }
 
 type Burger {
-    id: ID!
+    id: ID!,
     description: String!
-    name: String!,
-    rating: Int! 
+    restaurant: String!
+    name: String!
+    rating: Int!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+    burgers: [Burger!]!
+}
+
+type AuthPayload {
+    token: String
+    user: User
 }
