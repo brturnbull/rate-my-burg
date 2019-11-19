@@ -15,6 +15,7 @@ type Burger {
     restaurant: String!
     name: String!
     rating: Int!
+    postedBy: User
 }
 
 type User {

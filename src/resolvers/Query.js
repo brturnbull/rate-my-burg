@@ -1,4 +1,4 @@
-const feed = () => {
+const feed = (parent, args, context) => {
     return context.prisma.burgers();
 };
 
