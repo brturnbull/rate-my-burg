@@ -13,6 +13,20 @@ function post(root, args, context) {
     })
 }
 
+function update(root, args, context) {
+    return context.prisma.updateBurger({
+        data: {
+            name: args.name,
+            restaurant: args.restaurant,
+            description: args.description,
+            rating: args.rating,
+        },
+        where: {
+            id: args.id
+        }
+    })
+}
+
 async function signup(parent, args, context, info) {
     const password = await bcrypt.hash(args.password, 10);
     const user = await context.prisma.createUser({ ...args, password });
@@ -48,4 +62,5 @@ module.exports = {
     signup,
     login,
     post,
+    update
 };
