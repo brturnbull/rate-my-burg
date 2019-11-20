@@ -1,3 +1,3 @@
-# rate-my-burg
+# rate-my-burg 🍔 
 
-Side project to build GraphQL, TS, React
+GraphQL API which allows users to upload burgers/ratings, and have other users vote for these. 
