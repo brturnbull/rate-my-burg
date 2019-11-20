@@ -1,6 +1,15 @@
+enum BurgerOrderByInput {
+    description_ASC
+    description_DESC
+    name_ASC
+    name_DESC
+    createdAt_ASC
+    createdAt_DESC
+}
+
 type Query {
     info: String!
-    feed(filter: String, skip: Int, first: Int): [Burger!]!
+    feed(filter: String, skip: Int, first: Int, orderBy: BurgerOrderByInput): [Burger!]!
 }
 
 type Mutation {
