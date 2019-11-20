@@ -9,6 +9,10 @@ function updateBurgerSubscribe(parent, arg, context, info) {
     return context.prisma.$subscribe.burger({ mutation_in: ['UPDATED',]}).node()
 }
 
+function newVoteSubscribe(parent, args, context, info) {
+    return context.prisma.$subscribe.vote({ mutation_in: ['CREATED'] }).node()
+}
+
 // a subscription resolver is provided as the value for a subscribe field inside a plain JS object
 const newBurger = {
   subscribe: newBurgerSubscribe,
@@ -24,7 +28,15 @@ const updatedBurger = {
     }
 };
 
+const newVote = {
+    subscribe: newVoteSubscribe,
+    resolve: payload => {
+        return payload
+    },
+};
+
 module.exports = {
     newBurger,
-    updatedBurger
+    updatedBurger,
+    newVote
 };

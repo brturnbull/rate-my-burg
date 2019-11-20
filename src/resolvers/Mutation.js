@@ -58,9 +58,31 @@ async function login(parent, args, context, info) {
     }
 }
 
+async function voteForBurger(parent, args, context, info) {
+    const userId = getUserId(context);
+
+    const burgerVoteExists = await context.prisma.$exists.vote({
+        // comes from authorization bearer in the header
+        user: { id: userId },
+        // sent in the info
+        burger: { id: args.id },
+    });
+
+    if (burgerVoteExists) {
+        throw new Error('You\'ve already voted for this burger! Sorry, you can\'t vote twice');
+    }
+
+    return context.prisma.createVote({
+        user: { connect: { id: userId } },
+        burger: { connect: { id: args.id } },
+    });
+
+}
+
 module.exports = {
     signup,
     login,
     post,
-    update
+    update,
+    voteForBurger
 };
