@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { APP_SECRET, getUserId } = require('../utils');
+const {APP_SECRET, getUserId} = require('../utils');
 
 function post(root, args, context) {
     const userId = getUserId(context);
@@ -9,7 +9,7 @@ function post(root, args, context) {
         restaurant: args.restaurant,
         description: args.description,
         rating: args.rating,
-        postedBy: { connect: { id: userId } },
+        postedBy: {connect: {id: userId}},
     })
 }
 
@@ -29,7 +29,7 @@ function update(root, args, context) {
 
 async function signup(parent, args, context, info) {
     const password = await bcrypt.hash(args.password, 10);
-    const user = await context.prisma.createUser({ ...args, password });
+    const user = await context.prisma.createUser({...args, password});
 
     const token = jwt.sign({userId: user.id}, APP_SECRET);
 
@@ -63,9 +63,9 @@ async function voteForBurger(parent, args, context, info) {
 
     const burgerVoteExists = await context.prisma.$exists.vote({
         // comes from authorization bearer in the header
-        user: { id: userId },
+        user: {id: userId},
         // sent in the info
-        burger: { id: args.id },
+        burger: {id: args.id},
     });
 
     if (burgerVoteExists) {
@@ -73,8 +73,8 @@ async function voteForBurger(parent, args, context, info) {
     }
 
     return context.prisma.createVote({
-        user: { connect: { id: userId } },
-        burger: { connect: { id: args.id } },
+        user: {connect: {id: userId}},
+        burger: {connect: {id: args.id}},
     });
 
 }
