@@ -11,6 +11,10 @@ type AggregateUser {
   count: Int!
 }
 
+type AggregateVote {
+  count: Int!
+}
+
 type BatchPayload {
   count: Long!
 }
@@ -23,6 +27,7 @@ type Burger {
   name: String!
   rating: Int!
   postedBy: User
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
 }
 
 type BurgerConnection {
@@ -38,11 +43,17 @@ input BurgerCreateInput {
   name: String!
   rating: Int!
   postedBy: UserCreateOneWithoutBurgersInput
+  votes: VoteCreateManyWithoutBurgerInput
 }
 
 input BurgerCreateManyWithoutPostedByInput {
   create: [BurgerCreateWithoutPostedByInput!]
   connect: [BurgerWhereUniqueInput!]
+}
+
+input BurgerCreateOneWithoutVotesInput {
+  create: BurgerCreateWithoutVotesInput
+  connect: BurgerWhereUniqueInput
 }
 
 input BurgerCreateWithoutPostedByInput {
@@ -51,6 +62,16 @@ input BurgerCreateWithoutPostedByInput {
   restaurant: String!
   name: String!
   rating: Int!
+  votes: VoteCreateManyWithoutBurgerInput
+}
+
+input BurgerCreateWithoutVotesInput {
+  id: ID
+  description: String!
+  restaurant: String!
+  name: String!
+  rating: Int!
+  postedBy: UserCreateOneWithoutBurgersInput
 }
 
 type BurgerEdge {
@@ -184,6 +205,7 @@ input BurgerUpdateInput {
   name: String
   rating: Int
   postedBy: UserUpdateOneWithoutBurgersInput
+  votes: VoteUpdateManyWithoutBurgerInput
 }
 
 input BurgerUpdateManyDataInput {
@@ -217,16 +239,37 @@ input BurgerUpdateManyWithWhereNestedInput {
   data: BurgerUpdateManyDataInput!
 }
 
+input BurgerUpdateOneRequiredWithoutVotesInput {
+  create: BurgerCreateWithoutVotesInput
+  update: BurgerUpdateWithoutVotesDataInput
+  upsert: BurgerUpsertWithoutVotesInput
+  connect: BurgerWhereUniqueInput
+}
+
 input BurgerUpdateWithoutPostedByDataInput {
   description: String
   restaurant: String
   name: String
   rating: Int
+  votes: VoteUpdateManyWithoutBurgerInput
+}
+
+input BurgerUpdateWithoutVotesDataInput {
+  description: String
+  restaurant: String
+  name: String
+  rating: Int
+  postedBy: UserUpdateOneWithoutBurgersInput
 }
 
 input BurgerUpdateWithWhereUniqueWithoutPostedByInput {
   where: BurgerWhereUniqueInput!
   data: BurgerUpdateWithoutPostedByDataInput!
+}
+
+input BurgerUpsertWithoutVotesInput {
+  update: BurgerUpdateWithoutVotesDataInput!
+  create: BurgerCreateWithoutVotesInput!
 }
 
 input BurgerUpsertWithWhereUniqueWithoutPostedByInput {
@@ -309,6 +352,9 @@ input BurgerWhereInput {
   rating_gt: Int
   rating_gte: Int
   postedBy: UserWhereInput
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
   AND: [BurgerWhereInput!]
   OR: [BurgerWhereInput!]
   NOT: [BurgerWhereInput!]
@@ -335,6 +381,11 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  createVote(data: VoteCreateInput!): Vote!
+  updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
+  upsertVote(where: VoteWhereUniqueInput!, create: VoteCreateInput!, update: VoteUpdateInput!): Vote!
+  deleteVote(where: VoteWhereUniqueInput!): Vote
+  deleteManyVotes(where: VoteWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -361,12 +412,16 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  vote(where: VoteWhereUniqueInput!): Vote
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
+  votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
   node(id: ID!): Node
 }
 
 type Subscription {
   burger(where: BurgerSubscriptionWhereInput): BurgerSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
 }
 
 type User {
@@ -375,6 +430,7 @@ type User {
   email: String!
   password: String!
   burgers(where: BurgerWhereInput, orderBy: BurgerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Burger!]
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
 }
 
 type UserConnection {
@@ -389,10 +445,16 @@ input UserCreateInput {
   email: String!
   password: String!
   burgers: BurgerCreateManyWithoutPostedByInput
+  votes: VoteCreateManyWithoutUserInput
 }
 
 input UserCreateOneWithoutBurgersInput {
   create: UserCreateWithoutBurgersInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutVotesInput {
+  create: UserCreateWithoutVotesInput
   connect: UserWhereUniqueInput
 }
 
@@ -401,6 +463,15 @@ input UserCreateWithoutBurgersInput {
   name: String!
   email: String!
   password: String!
+  votes: VoteCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutVotesInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  burgers: BurgerCreateManyWithoutPostedByInput
 }
 
 type UserEdge {
@@ -449,12 +520,20 @@ input UserUpdateInput {
   email: String
   password: String
   burgers: BurgerUpdateManyWithoutPostedByInput
+  votes: VoteUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+}
+
+input UserUpdateOneRequiredWithoutVotesInput {
+  create: UserCreateWithoutVotesInput
+  update: UserUpdateWithoutVotesDataInput
+  upsert: UserUpsertWithoutVotesInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneWithoutBurgersInput {
@@ -470,11 +549,24 @@ input UserUpdateWithoutBurgersDataInput {
   name: String
   email: String
   password: String
+  votes: VoteUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutVotesDataInput {
+  name: String
+  email: String
+  password: String
+  burgers: BurgerUpdateManyWithoutPostedByInput
 }
 
 input UserUpsertWithoutBurgersInput {
   update: UserUpdateWithoutBurgersDataInput!
   create: UserCreateWithoutBurgersInput!
+}
+
+input UserUpsertWithoutVotesInput {
+  update: UserUpdateWithoutVotesDataInput!
+  create: UserCreateWithoutVotesInput!
 }
 
 input UserWhereInput {
@@ -537,6 +629,9 @@ input UserWhereInput {
   burgers_every: BurgerWhereInput
   burgers_some: BurgerWhereInput
   burgers_none: BurgerWhereInput
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
@@ -545,6 +640,179 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: ID
   email: String
+}
+
+type Vote {
+  id: ID!
+  burger: Burger!
+  user: User!
+}
+
+type VoteConnection {
+  pageInfo: PageInfo!
+  edges: [VoteEdge]!
+  aggregate: AggregateVote!
+}
+
+input VoteCreateInput {
+  id: ID
+  burger: BurgerCreateOneWithoutVotesInput!
+  user: UserCreateOneWithoutVotesInput!
+}
+
+input VoteCreateManyWithoutBurgerInput {
+  create: [VoteCreateWithoutBurgerInput!]
+  connect: [VoteWhereUniqueInput!]
+}
+
+input VoteCreateManyWithoutUserInput {
+  create: [VoteCreateWithoutUserInput!]
+  connect: [VoteWhereUniqueInput!]
+}
+
+input VoteCreateWithoutBurgerInput {
+  id: ID
+  user: UserCreateOneWithoutVotesInput!
+}
+
+input VoteCreateWithoutUserInput {
+  id: ID
+  burger: BurgerCreateOneWithoutVotesInput!
+}
+
+type VoteEdge {
+  node: Vote!
+  cursor: String!
+}
+
+enum VoteOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type VotePreviousValues {
+  id: ID!
+}
+
+input VoteScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  AND: [VoteScalarWhereInput!]
+  OR: [VoteScalarWhereInput!]
+  NOT: [VoteScalarWhereInput!]
+}
+
+type VoteSubscriptionPayload {
+  mutation: MutationType!
+  node: Vote
+  updatedFields: [String!]
+  previousValues: VotePreviousValues
+}
+
+input VoteSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: VoteWhereInput
+  AND: [VoteSubscriptionWhereInput!]
+  OR: [VoteSubscriptionWhereInput!]
+  NOT: [VoteSubscriptionWhereInput!]
+}
+
+input VoteUpdateInput {
+  burger: BurgerUpdateOneRequiredWithoutVotesInput
+  user: UserUpdateOneRequiredWithoutVotesInput
+}
+
+input VoteUpdateManyWithoutBurgerInput {
+  create: [VoteCreateWithoutBurgerInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutBurgerInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutBurgerInput!]
+  deleteMany: [VoteScalarWhereInput!]
+}
+
+input VoteUpdateManyWithoutUserInput {
+  create: [VoteCreateWithoutUserInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [VoteScalarWhereInput!]
+}
+
+input VoteUpdateWithoutBurgerDataInput {
+  user: UserUpdateOneRequiredWithoutVotesInput
+}
+
+input VoteUpdateWithoutUserDataInput {
+  burger: BurgerUpdateOneRequiredWithoutVotesInput
+}
+
+input VoteUpdateWithWhereUniqueWithoutBurgerInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutBurgerDataInput!
+}
+
+input VoteUpdateWithWhereUniqueWithoutUserInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutUserDataInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutBurgerInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutBurgerDataInput!
+  create: VoteCreateWithoutBurgerInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutUserInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutUserDataInput!
+  create: VoteCreateWithoutUserInput!
+}
+
+input VoteWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  burger: BurgerWhereInput
+  user: UserWhereInput
+  AND: [VoteWhereInput!]
+  OR: [VoteWhereInput!]
+  NOT: [VoteWhereInput!]
+}
+
+input VoteWhereUniqueInput {
+  id: ID
 }
 `
       }

@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   burger: (where?: BurgerWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
+  vote: (where?: VoteWhereInput) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -77,6 +78,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => UserConnectionPromise;
+  vote: (where: VoteWhereUniqueInput) => VoteNullablePromise;
+  votes: (args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Vote>;
+  votesConnection: (args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => VoteConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -115,6 +135,18 @@ export interface Prisma {
   }) => UserPromise;
   deleteUser: (where: UserWhereUniqueInput) => UserPromise;
   deleteManyUsers: (where?: UserWhereInput) => BatchPayloadPromise;
+  createVote: (data: VoteCreateInput) => VotePromise;
+  updateVote: (args: {
+    data: VoteUpdateInput;
+    where: VoteWhereUniqueInput;
+  }) => VotePromise;
+  upsertVote: (args: {
+    where: VoteWhereUniqueInput;
+    create: VoteCreateInput;
+    update: VoteUpdateInput;
+  }) => VotePromise;
+  deleteVote: (where: VoteWhereUniqueInput) => VotePromise;
+  deleteManyVotes: (where?: VoteWhereInput) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -130,6 +162,9 @@ export interface Subscription {
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
+  vote: (
+    where?: VoteSubscriptionWhereInput
+  ) => VoteSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -153,6 +188,8 @@ export type BurgerOrderByInput =
   | "name_DESC"
   | "rating_ASC"
   | "rating_DESC";
+
+export type VoteOrderByInput = "id_ASC" | "id_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -244,6 +281,9 @@ export interface BurgerWhereInput {
   rating_gt?: Maybe<Int>;
   rating_gte?: Maybe<Int>;
   postedBy?: Maybe<UserWhereInput>;
+  votes_every?: Maybe<VoteWhereInput>;
+  votes_some?: Maybe<VoteWhereInput>;
+  votes_none?: Maybe<VoteWhereInput>;
   AND?: Maybe<BurgerWhereInput[] | BurgerWhereInput>;
   OR?: Maybe<BurgerWhereInput[] | BurgerWhereInput>;
   NOT?: Maybe<BurgerWhereInput[] | BurgerWhereInput>;
@@ -309,14 +349,43 @@ export interface UserWhereInput {
   burgers_every?: Maybe<BurgerWhereInput>;
   burgers_some?: Maybe<BurgerWhereInput>;
   burgers_none?: Maybe<BurgerWhereInput>;
+  votes_every?: Maybe<VoteWhereInput>;
+  votes_some?: Maybe<VoteWhereInput>;
+  votes_none?: Maybe<VoteWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
+export interface VoteWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  burger?: Maybe<BurgerWhereInput>;
+  user?: Maybe<UserWhereInput>;
+  AND?: Maybe<VoteWhereInput[] | VoteWhereInput>;
+  OR?: Maybe<VoteWhereInput[] | VoteWhereInput>;
+  NOT?: Maybe<VoteWhereInput[] | VoteWhereInput>;
+}
+
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   email?: Maybe<String>;
+}>;
+
+export type VoteWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
 }>;
 
 export interface BurgerCreateInput {
@@ -326,6 +395,7 @@ export interface BurgerCreateInput {
   name: String;
   rating: Int;
   postedBy?: Maybe<UserCreateOneWithoutBurgersInput>;
+  votes?: Maybe<VoteCreateManyWithoutBurgerInput>;
 }
 
 export interface UserCreateOneWithoutBurgersInput {
@@ -338,44 +408,49 @@ export interface UserCreateWithoutBurgersInput {
   name: String;
   email: String;
   password: String;
+  votes?: Maybe<VoteCreateManyWithoutUserInput>;
 }
 
-export interface BurgerUpdateInput {
-  description?: Maybe<String>;
-  restaurant?: Maybe<String>;
-  name?: Maybe<String>;
-  rating?: Maybe<Int>;
-  postedBy?: Maybe<UserUpdateOneWithoutBurgersInput>;
+export interface VoteCreateManyWithoutUserInput {
+  create?: Maybe<VoteCreateWithoutUserInput[] | VoteCreateWithoutUserInput>;
+  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
 }
 
-export interface UserUpdateOneWithoutBurgersInput {
-  create?: Maybe<UserCreateWithoutBurgersInput>;
-  update?: Maybe<UserUpdateWithoutBurgersDataInput>;
-  upsert?: Maybe<UserUpsertWithoutBurgersInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
+export interface VoteCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  burger: BurgerCreateOneWithoutVotesInput;
+}
+
+export interface BurgerCreateOneWithoutVotesInput {
+  create?: Maybe<BurgerCreateWithoutVotesInput>;
+  connect?: Maybe<BurgerWhereUniqueInput>;
+}
+
+export interface BurgerCreateWithoutVotesInput {
+  id?: Maybe<ID_Input>;
+  description: String;
+  restaurant: String;
+  name: String;
+  rating: Int;
+  postedBy?: Maybe<UserCreateOneWithoutBurgersInput>;
+}
+
+export interface VoteCreateManyWithoutBurgerInput {
+  create?: Maybe<VoteCreateWithoutBurgerInput[] | VoteCreateWithoutBurgerInput>;
+  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+}
+
+export interface VoteCreateWithoutBurgerInput {
+  id?: Maybe<ID_Input>;
+  user: UserCreateOneWithoutVotesInput;
+}
+
+export interface UserCreateOneWithoutVotesInput {
+  create?: Maybe<UserCreateWithoutVotesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateWithoutBurgersDataInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface UserUpsertWithoutBurgersInput {
-  update: UserUpdateWithoutBurgersDataInput;
-  create: UserCreateWithoutBurgersInput;
-}
-
-export interface BurgerUpdateManyMutationInput {
-  description?: Maybe<String>;
-  restaurant?: Maybe<String>;
-  name?: Maybe<String>;
-  rating?: Maybe<Int>;
-}
-
-export interface UserCreateInput {
+export interface UserCreateWithoutVotesInput {
   id?: Maybe<ID_Input>;
   name: String;
   email: String;
@@ -396,9 +471,145 @@ export interface BurgerCreateWithoutPostedByInput {
   restaurant: String;
   name: String;
   rating: Int;
+  votes?: Maybe<VoteCreateManyWithoutBurgerInput>;
 }
 
-export interface UserUpdateInput {
+export interface BurgerUpdateInput {
+  description?: Maybe<String>;
+  restaurant?: Maybe<String>;
+  name?: Maybe<String>;
+  rating?: Maybe<Int>;
+  postedBy?: Maybe<UserUpdateOneWithoutBurgersInput>;
+  votes?: Maybe<VoteUpdateManyWithoutBurgerInput>;
+}
+
+export interface UserUpdateOneWithoutBurgersInput {
+  create?: Maybe<UserCreateWithoutBurgersInput>;
+  update?: Maybe<UserUpdateWithoutBurgersDataInput>;
+  upsert?: Maybe<UserUpsertWithoutBurgersInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutBurgersDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  votes?: Maybe<VoteUpdateManyWithoutUserInput>;
+}
+
+export interface VoteUpdateManyWithoutUserInput {
+  create?: Maybe<VoteCreateWithoutUserInput[] | VoteCreateWithoutUserInput>;
+  delete?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  set?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  disconnect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  update?: Maybe<
+    | VoteUpdateWithWhereUniqueWithoutUserInput[]
+    | VoteUpdateWithWhereUniqueWithoutUserInput
+  >;
+  upsert?: Maybe<
+    | VoteUpsertWithWhereUniqueWithoutUserInput[]
+    | VoteUpsertWithWhereUniqueWithoutUserInput
+  >;
+  deleteMany?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+}
+
+export interface VoteUpdateWithWhereUniqueWithoutUserInput {
+  where: VoteWhereUniqueInput;
+  data: VoteUpdateWithoutUserDataInput;
+}
+
+export interface VoteUpdateWithoutUserDataInput {
+  burger?: Maybe<BurgerUpdateOneRequiredWithoutVotesInput>;
+}
+
+export interface BurgerUpdateOneRequiredWithoutVotesInput {
+  create?: Maybe<BurgerCreateWithoutVotesInput>;
+  update?: Maybe<BurgerUpdateWithoutVotesDataInput>;
+  upsert?: Maybe<BurgerUpsertWithoutVotesInput>;
+  connect?: Maybe<BurgerWhereUniqueInput>;
+}
+
+export interface BurgerUpdateWithoutVotesDataInput {
+  description?: Maybe<String>;
+  restaurant?: Maybe<String>;
+  name?: Maybe<String>;
+  rating?: Maybe<Int>;
+  postedBy?: Maybe<UserUpdateOneWithoutBurgersInput>;
+}
+
+export interface BurgerUpsertWithoutVotesInput {
+  update: BurgerUpdateWithoutVotesDataInput;
+  create: BurgerCreateWithoutVotesInput;
+}
+
+export interface VoteUpsertWithWhereUniqueWithoutUserInput {
+  where: VoteWhereUniqueInput;
+  update: VoteUpdateWithoutUserDataInput;
+  create: VoteCreateWithoutUserInput;
+}
+
+export interface VoteScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  AND?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+  OR?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+  NOT?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+}
+
+export interface UserUpsertWithoutBurgersInput {
+  update: UserUpdateWithoutBurgersDataInput;
+  create: UserCreateWithoutBurgersInput;
+}
+
+export interface VoteUpdateManyWithoutBurgerInput {
+  create?: Maybe<VoteCreateWithoutBurgerInput[] | VoteCreateWithoutBurgerInput>;
+  delete?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  set?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  disconnect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
+  update?: Maybe<
+    | VoteUpdateWithWhereUniqueWithoutBurgerInput[]
+    | VoteUpdateWithWhereUniqueWithoutBurgerInput
+  >;
+  upsert?: Maybe<
+    | VoteUpsertWithWhereUniqueWithoutBurgerInput[]
+    | VoteUpsertWithWhereUniqueWithoutBurgerInput
+  >;
+  deleteMany?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+}
+
+export interface VoteUpdateWithWhereUniqueWithoutBurgerInput {
+  where: VoteWhereUniqueInput;
+  data: VoteUpdateWithoutBurgerDataInput;
+}
+
+export interface VoteUpdateWithoutBurgerDataInput {
+  user?: Maybe<UserUpdateOneRequiredWithoutVotesInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutVotesInput {
+  create?: Maybe<UserCreateWithoutVotesInput>;
+  update?: Maybe<UserUpdateWithoutVotesDataInput>;
+  upsert?: Maybe<UserUpsertWithoutVotesInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutVotesDataInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
@@ -438,6 +649,7 @@ export interface BurgerUpdateWithoutPostedByDataInput {
   restaurant?: Maybe<String>;
   name?: Maybe<String>;
   rating?: Maybe<Int>;
+  votes?: Maybe<VoteUpdateManyWithoutBurgerInput>;
 }
 
 export interface BurgerUpsertWithWhereUniqueWithoutPostedByInput {
@@ -536,10 +748,56 @@ export interface BurgerUpdateManyDataInput {
   rating?: Maybe<Int>;
 }
 
+export interface UserUpsertWithoutVotesInput {
+  update: UserUpdateWithoutVotesDataInput;
+  create: UserCreateWithoutVotesInput;
+}
+
+export interface VoteUpsertWithWhereUniqueWithoutBurgerInput {
+  where: VoteWhereUniqueInput;
+  update: VoteUpdateWithoutBurgerDataInput;
+  create: VoteCreateWithoutBurgerInput;
+}
+
+export interface BurgerUpdateManyMutationInput {
+  description?: Maybe<String>;
+  restaurant?: Maybe<String>;
+  name?: Maybe<String>;
+  rating?: Maybe<Int>;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  burgers?: Maybe<BurgerCreateManyWithoutPostedByInput>;
+  votes?: Maybe<VoteCreateManyWithoutUserInput>;
+}
+
+export interface UserUpdateInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  burgers?: Maybe<BurgerUpdateManyWithoutPostedByInput>;
+  votes?: Maybe<VoteUpdateManyWithoutUserInput>;
+}
+
 export interface UserUpdateManyMutationInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
+}
+
+export interface VoteCreateInput {
+  id?: Maybe<ID_Input>;
+  burger: BurgerCreateOneWithoutVotesInput;
+  user: UserCreateOneWithoutVotesInput;
+}
+
+export interface VoteUpdateInput {
+  burger?: Maybe<BurgerUpdateOneRequiredWithoutVotesInput>;
+  user?: Maybe<UserUpdateOneRequiredWithoutVotesInput>;
 }
 
 export interface BurgerSubscriptionWhereInput {
@@ -564,6 +822,17 @@ export interface UserSubscriptionWhereInput {
   NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
+export interface VoteSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<VoteWhereInput>;
+  AND?: Maybe<VoteSubscriptionWhereInput[] | VoteSubscriptionWhereInput>;
+  OR?: Maybe<VoteSubscriptionWhereInput[] | VoteSubscriptionWhereInput>;
+  NOT?: Maybe<VoteSubscriptionWhereInput[] | VoteSubscriptionWhereInput>;
+}
+
 export interface NodeNode {
   id: ID_Output;
 }
@@ -585,6 +854,15 @@ export interface BurgerPromise extends Promise<Burger>, Fragmentable {
   name: () => Promise<String>;
   rating: () => Promise<Int>;
   postedBy: <T = UserPromise>() => T;
+  votes: <T = FragmentableArray<Vote>>(args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface BurgerSubscription
@@ -597,6 +875,15 @@ export interface BurgerSubscription
   name: () => Promise<AsyncIterator<String>>;
   rating: () => Promise<AsyncIterator<Int>>;
   postedBy: <T = UserSubscription>() => T;
+  votes: <T = Promise<AsyncIterator<VoteSubscription>>>(args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface BurgerNullablePromise
@@ -609,6 +896,15 @@ export interface BurgerNullablePromise
   name: () => Promise<String>;
   rating: () => Promise<Int>;
   postedBy: <T = UserPromise>() => T;
+  votes: <T = FragmentableArray<Vote>>(args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface User {
@@ -626,6 +922,15 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   burgers: <T = FragmentableArray<Burger>>(args?: {
     where?: BurgerWhereInput;
     orderBy?: BurgerOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  votes: <T = FragmentableArray<Vote>>(args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -650,6 +955,15 @@ export interface UserSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  votes: <T = Promise<AsyncIterator<VoteSubscription>>>(args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserNullablePromise
@@ -668,6 +982,41 @@ export interface UserNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+  votes: <T = FragmentableArray<Vote>>(args?: {
+    where?: VoteWhereInput;
+    orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface Vote {
+  id: ID_Output;
+}
+
+export interface VotePromise extends Promise<Vote>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  burger: <T = BurgerPromise>() => T;
+  user: <T = UserPromise>() => T;
+}
+
+export interface VoteSubscription
+  extends Promise<AsyncIterator<Vote>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  burger: <T = BurgerSubscription>() => T;
+  user: <T = UserSubscription>() => T;
+}
+
+export interface VoteNullablePromise
+  extends Promise<Vote | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  burger: <T = BurgerPromise>() => T;
+  user: <T = UserPromise>() => T;
 }
 
 export interface BurgerConnection {
@@ -801,6 +1150,60 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface VoteConnection {
+  pageInfo: PageInfo;
+  edges: VoteEdge[];
+}
+
+export interface VoteConnectionPromise
+  extends Promise<VoteConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<VoteEdge>>() => T;
+  aggregate: <T = AggregateVotePromise>() => T;
+}
+
+export interface VoteConnectionSubscription
+  extends Promise<AsyncIterator<VoteConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<VoteEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateVoteSubscription>() => T;
+}
+
+export interface VoteEdge {
+  node: Vote;
+  cursor: String;
+}
+
+export interface VoteEdgePromise extends Promise<VoteEdge>, Fragmentable {
+  node: <T = VotePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface VoteEdgeSubscription
+  extends Promise<AsyncIterator<VoteEdge>>,
+    Fragmentable {
+  node: <T = VoteSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateVote {
+  count: Int;
+}
+
+export interface AggregateVotePromise
+  extends Promise<AggregateVote>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateVoteSubscription
+  extends Promise<AsyncIterator<AggregateVote>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface BatchPayload {
   count: Long;
 }
@@ -923,6 +1326,47 @@ export interface UserPreviousValuesSubscription
   password: () => Promise<AsyncIterator<String>>;
 }
 
+export interface VoteSubscriptionPayload {
+  mutation: MutationType;
+  node: Vote;
+  updatedFields: String[];
+  previousValues: VotePreviousValues;
+}
+
+export interface VoteSubscriptionPayloadPromise
+  extends Promise<VoteSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = VotePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = VotePreviousValuesPromise>() => T;
+}
+
+export interface VoteSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<VoteSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = VoteSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = VotePreviousValuesSubscription>() => T;
+}
+
+export interface VotePreviousValues {
+  id: ID_Output;
+}
+
+export interface VotePreviousValuesPromise
+  extends Promise<VotePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+}
+
+export interface VotePreviousValuesSubscription
+  extends Promise<AsyncIterator<VotePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+}
+
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
 */
@@ -967,6 +1411,10 @@ export const models: Model[] = [
   },
   {
     name: "User",
+    embedded: false
+  },
+  {
+    name: "Vote",
     embedded: false
   }
 ];

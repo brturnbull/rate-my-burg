@@ -17,6 +17,7 @@ type Burger {
     name: String!
     rating: Int!
     postedBy: User
+    votes: [Vote!]!
 }
 
 type User {
@@ -35,4 +36,10 @@ type AuthPayload {
 type Subscription {
     newBurger: Burger
     updatedBurger: Burger
+}
+
+type Vote {
+    id: ID!
+    burger: Burger!
+    user: User!
 }
