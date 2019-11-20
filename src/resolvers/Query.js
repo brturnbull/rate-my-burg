@@ -7,7 +7,9 @@ async function feed(parent, args, context, info) {
         ],
     } : {};
     const burgers = await context.prisma.burgers({
-        where
+        where,
+        skip: args.skip,
+        first: args.first
     });
     return burgers
 }
