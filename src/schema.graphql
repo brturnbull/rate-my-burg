@@ -8,6 +8,7 @@ type Mutation {
     update(id: String!, name: String, description: String, restaurant: String, rating: Int): Burger
     signup(email: String!, password: String!, name: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
+    voteForBurger(id: ID!): Vote
 }
 
 type Burger {
@@ -36,6 +37,7 @@ type AuthPayload {
 type Subscription {
     newBurger: Burger
     updatedBurger: Burger
+    newVote: Vote
 }
 
 type Vote {
