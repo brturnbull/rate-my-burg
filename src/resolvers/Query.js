@@ -12,7 +12,15 @@ async function feed(parent, args, context, info) {
         first: args.first,
         orderBy: args.orderBy
     });
-    return burgers
+    const count = await context.prisma({
+        where
+    })
+        .aggregate()
+        .count()
+    return {
+        count,
+        burgers
+    }
 }
 
 module.exports = {

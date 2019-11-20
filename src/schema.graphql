@@ -9,7 +9,12 @@ enum BurgerOrderByInput {
 
 type Query {
     info: String!
-    feed(filter: String, skip: Int, first: Int, orderBy: BurgerOrderByInput): [Burger!]!
+    feed(filter: String, skip: Int, first: Int, orderBy: BurgerOrderByInput): Feed!
+}
+
+type Feed {
+    burgers: [Burger!]!
+    count: Int!
 }
 
 type Mutation {
