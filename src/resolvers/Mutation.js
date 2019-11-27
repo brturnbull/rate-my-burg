@@ -58,6 +58,10 @@ async function login(parent, args, context, info) {
     }
 }
 
+function remove(parent, args, context, info) {
+    return context.prisma.deleteBurger({id: args.id});
+}
+
 async function voteForBurger(parent, args, context, info) {
     const userId = getUserId(context);
 
@@ -76,7 +80,6 @@ async function voteForBurger(parent, args, context, info) {
         user: {connect: {id: userId}},
         burger: {connect: {id: args.id}},
     });
-
 }
 
 module.exports = {
@@ -84,5 +87,6 @@ module.exports = {
     login,
     post,
     update,
-    voteForBurger
+    voteForBurger,
+    remove
 };

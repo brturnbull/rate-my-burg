@@ -23,6 +23,7 @@ type Mutation {
     signup(email: String!, password: String!, name: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
     voteForBurger(id: ID!): Vote
+    remove(id: ID!): Burger
 }
 
 type Burger {

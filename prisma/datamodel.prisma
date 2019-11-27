@@ -6,7 +6,7 @@ type Burger {
     name: String!
     rating: Int!
     postedBy: User
-    votes: [Vote!]!
+    votes: [Vote!]! @relation(name: "Votes", onDelete: CASCADE)
 }
 
 type User {
@@ -21,6 +21,6 @@ type User {
 
 type Vote {
     id: ID! @id
-    burger: Burger!
+    burger: Burger! @relation(name: "Votes", onDelete: CASCADnodeE)
     user: User!
 }
